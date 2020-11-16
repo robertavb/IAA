@@ -22,112 +22,80 @@ public class ImageEx extends Image {
 
 	public void kochCurve(int px, int py, int qx, int qy, int l) {
 
-		/*
-		 * A partir de uma reta PQ já desenhado!
-		 * 
-		 * double sen60 = Math.sin(3.14 / 3);
-		 * 
-		 * 
-		 * coloca os valores calculados em "calculaReta" px, py, qx e qy em cada
-		 * variável de "kochCurve" para o cálculo das distância de cada ponto
-		 * 
-		 * int resultadoDaReta = calculaReta(px, py, qx, qy);
-		 * 
-		 * 
-		 * calcula os pontos de modo que o comprimento de cada um seja 1/3 do
-		 * comprimento PQ
-		 * 
-		 * int distancia = (int) (resultadoDaReta / 3);
-		 * 
-		 * desenha a primeira linha
-		 * 
-		 * if (distancia < l) { img.drawLine(px, py, qx, qy); return; }
-		 */
-
-		/*
-		 * 1) se c < l então desenhe o segmento de reta PQ 2) Caso contrário: (a)
-		 * calcule os pontos A, B, C (b) chame o algoritmo recursivamente para PA, AB,
-		 * BC, CQ (px, py, qx, qy)
-		 * 
-		 * /* ponto A e C, esses pontos fazem parte do segmento PQ
-		 */
-		/* ponto R qualquer do segmento PQ */
-
 		int resultadoDaReta = calculaReta(px, py, qx, qy);
 		int distancia = (int) (resultadoDaReta / 3);
 
 		if (distancia < l) {
-			img.drawLine(px, py, qx, qy);
+			/* fiz py e qy antes de px e py para deixar na horizontal */
+			img.drawLine(py, px, qy, qx);
 			return;
 		}
 
 		/* Calculo das coordenadas do ponto A */
 
-		int a1 = (int) (1 - (1 / 3)) * px + (1 / 3) * qx;
-		int a2 = (int) (1 - (1 / 3)) * py + (1 / 3) * qy;
+		int a1 = (int) (px + ((double) (qx - px) * 1 / 3));
+		int a2 = (int) (py + ((double) (qy - py) * 1 / 3));
 
-		/* Calculo das coordenadas do ponto B */
-
-		/*
-		 * Para o calculo do B, precisamos de algumas etapas a mais. Vamos primeiro
-		 * calcular o ponto M que está na metade do segmento e, portanto, pode ser
-		 * calculado de modo similar aos pontos A e C, porém usando o valor 0.5. A
-		 * partir desse ponto M, podemos calcular B como sendo
-		 */
+		/* Calculo necessarios para calcular as coordenadas do ponto B */
 
 		/*
 		 * Calculo do ponto que se encontra na metade do segmento Usando duas
 		 * coordenadas
 		 */
-		int m1 = (int) (1 - (1 / 2)) * px + (1 / 2) * qx;
-		int m2 = (int) (1 - (1 / 2)) * py + (1 / 2) * qy;
 
-		/* Calculando o vetor "v" que liga o ponto P ao ponto Q */
-
-		int v1 = (int) (qx - px);
-		int v2 = (int) (qy - qx);
+		int m1 = (int) (px + ((double) (qx - px) / 2));
+		int m2 = (int) (py + ((double) (qy - py) / 2));
 
 		/*
 		 * Calculo do comprimento esperado do vetor u, equivalente a altura h do
 		 * triangulo formado pelos pontos A, B e C
 		 */
 
-		/* o "l" do professor é o meu "distancia" */
-
-		double h = (int) Math.abs(distancia) * Math.sqrt(3) / 6;
-
-		/* Calculo do vetor rv, perpendicular ao vetor v */
+		/*
+		 * Calculo do vetor rv, perpendicular ao vetor v Usamos Math.PI/2 para o calculo
+		 * do angulo de 90 graus e o Math.atan(y/x) para o angulo que a linha
+		 * [(0,0};(x,y)] forma com o eixo x em um sistema de coordenadas cartesianas
+		 */
 
 		double angulo = (Math.PI / 2) - Math.atan((double) (qy - py) / (qx - px));
 
-		double u1 = (int) angulo * Math.sqrt(3) / 6;
+		/*
+		 * Calculo com que fará que as linhas rotacionem x graus para formar a curva de
+		 * Koch
+		 */
+
+		double x = distancia * Math.cos(angulo);
+		double y = distancia * Math.sin(angulo);
 
 		/* Calculo do ponto B, utilizando o M e o vetor que liga o ponto P ao ponto Q */
+		int b1;
+		int b2;
 
-		double b1 = (int) m1 + u1;
-		double b2 = (int) m2 - u1;
-
-		int bx = (int) b1;
-		int by = (int) b2;
+		if (px > qx) {
+			b1 = (int) (m1 - x);
+			b2 = (int) (m2 + y);
+		} else {
+			b1 = (int) (m1 + x);
+			b2 = (int) (m2 - y);
+		}
 
 		/* Calculo das coordenadas do ponto C */
-		int c1 = (int) (1 - (2 / 3)) * px + (2 / 3) * qx;
-		int c2 = (int) (1 - (2 / 3)) * py + (2 / 3) * qx;
+		int c1 = (int) (px + ((qx - px) * 2.0 / 3.0));
+		int c2 = (int) (py + ((qy - py) * 2.0 / 3.0));
 
 		/* Usando a recursividade para desenhar a curva de Koch */
-
 		kochCurve(px, py, a1, a2, l);
-		kochCurve(a1, a2, bx, by, l);
-		kochCurve(bx, by, c1, c2, l);
+		kochCurve(a1, a2, b1, b2, l);
+		kochCurve(b1, b2, c1, c2, l);
 		kochCurve(c1, c2, qx, qy, l);
 
 	}
 
 	public static void drawKochCurve() {
 
-		int w = 1000;
-		int h = 1000;
-		ImageEx img = new ImageEx(w, h, 0, 0, 0);
+		int w = 512;
+		int h = 512;
+		img = new ImageEx(w, h, 0, 0, 0);
 		img.setBgColor(0, 0, 0);
 		img.clear();
 
