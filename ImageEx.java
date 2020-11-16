@@ -75,35 +75,40 @@ public class ImageEx extends Image {
 		 * partir desse ponto M, podemos calcular B como sendo
 		 */
 
-		/* Calculo do ponto que se encontra na metade do segmento 
-			 Usando duas coordenadas */
+		/*
+		 * Calculo do ponto que se encontra na metade do segmento Usando duas
+		 * coordenadas
+		 */
 		int m1 = (int) (1 - (1 / 2)) * px + (1 / 2) * qx;
-		int m2 = (int) (1 - (1/2)) * px + (1/2) * qx;
+		int m2 = (int) (1 - (1 / 2)) * py + (1 / 2) * qy;
 
 		/* Calculando o vetor "v" que liga o ponto P ao ponto Q */
 
 		int v1 = (int) (qx - px);
 		int v2 = (int) (qy - qx);
 
-		/* Calculo do comprimento esperado do vetor u, equivalente a altura h do triangulo formado pelos pontos A, B e C */
+		/*
+		 * Calculo do comprimento esperado do vetor u, equivalente a altura h do
+		 * triangulo formado pelos pontos A, B e C
+		 */
+
+		/* o "l" do professor é o meu "distancia" */
 
 		double h = (int) Math.abs(distancia) * Math.sqrt(3) / 6;
 
 		/* Calculo do vetor rv, perpendicular ao vetor v */
 
-		int anguloP = 90;
-		int anguloQ = -90;
+		double angulo = (Math.PI / 2) - Math.atan((double) (qy - py) / (qx - px));
 
-		double u1 = (int) anguloP * Math.sqrt(3);
-		double u2 = (int) anguloQ * Math.sqrt(3);
+		double u1 = (int) angulo * Math.sqrt(3) / 6;
 
 		/* Calculo do ponto B, utilizando o M e o vetor que liga o ponto P ao ponto Q */
 
-		double b1 = (int) m1 * u1;
-		double b2 = (int) m2 * u2;
+		double b1 = (int) m1 + u1;
+		double b2 = (int) m2 - u1;
 
-		int bx = (int)b1;
-		int by = (int)b2;
+		int bx = (int) b1;
+		int by = (int) b2;
 
 		/* Calculo das coordenadas do ponto C */
 		int c1 = (int) (1 - (2 / 3)) * px + (2 / 3) * qx;
@@ -113,7 +118,7 @@ public class ImageEx extends Image {
 
 		kochCurve(px, py, a1, a2, l);
 		kochCurve(a1, a2, bx, by, l);
-		kochCurve(bx, by, c1, c1, l);
+		kochCurve(bx, by, c1, c2, l);
 		kochCurve(c1, c2, qx, qy, l);
 
 	}
