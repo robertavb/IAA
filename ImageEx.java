@@ -93,8 +93,8 @@ public class ImageEx extends Image {
 
 	public static void drawKochCurve() {
 
-		int w = 512;
-		int h = 512;
+		int w = 2000;
+		int h = 2000;
 		img = new ImageEx(w, h, 0, 0, 0);
 		img.setBgColor(0, 0, 0);
 		img.clear();
@@ -108,9 +108,22 @@ public class ImageEx extends Image {
 
 	public void regionFill(int x, int y, int reference_rgb) {
 
+		
+		if(reference_rgb == img.getRGB(x, y);){
+
+		}
+
+
 	}
 
 	public static void drawRegionFill(String fileName) {
+
+		int w = 512;
+		int h = 512;
+
+		img = new ImageEx(w, h, 0, 0, 0);
+
+		img.setColor(255, 195, 0);
 
 	}
 
