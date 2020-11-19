@@ -33,8 +33,8 @@ public class ImageEx extends Image {
 
 		/* Calculo das coordenadas do ponto A */
 
-		int a1 = (int) (px + ((double) (qx - px) * 1 / 3));
-		int a2 = (int) (py + ((double) (qy - py) * 1 / 3));
+		int ax = (int) (px + ((double) (qx - px) * 1 / 3));
+		int ay = (int) (py + ((double) (qy - py) * 1 / 3));
 
 		/* Calculo necessarios para calcular as coordenadas do ponto B */
 
@@ -45,11 +45,6 @@ public class ImageEx extends Image {
 
 		int m1 = (int) (px + ((double) (qx - px) / 2));
 		int m2 = (int) (py + ((double) (qy - py) / 2));
-
-		/*
-		 * Calculo do comprimento esperado do vetor u, equivalente a altura h do
-		 * triangulo formado pelos pontos A, B e C
-		 */
 
 		/*
 		 * Calculo do vetor rv, perpendicular ao vetor v Usamos Math.PI/2 para o calculo
@@ -68,39 +63,39 @@ public class ImageEx extends Image {
 		double y = distancia * Math.sin(angulo);
 
 		/* Calculo do ponto B, utilizando o M e o vetor que liga o ponto P ao ponto Q */
-		int b1;
-		int b2;
+		int bx;
+		int by;
 
 		if (px > qx) {
-			b1 = (int) (m1 - x);
-			b2 = (int) (m2 + y);
+			bx = (int) (m1 - x);
+			by = (int) (m2 + y);
 		} else {
-			b1 = (int) (m1 + x);
-			b2 = (int) (m2 - y);
+			bx = (int) (m1 + x);
+			by = (int) (m2 - y);
 		}
 
 		/* Calculo das coordenadas do ponto C */
-		int c1 = (int) (px + ((qx - px) * 2.0 / 3.0));
-		int c2 = (int) (py + ((qy - py) * 2.0 / 3.0));
+		int cx = (int) (px + ((qx - px) * 2.0 / 3.0));
+		int cy = (int) (py + ((qy - py) * 2.0 / 3.0));
 
 		/* Usando a recursividade para desenhar a curva de Koch */
-		kochCurve(px, py, a1, a2, l);
-		kochCurve(a1, a2, b1, b2, l);
-		kochCurve(b1, b2, c1, c2, l);
-		kochCurve(c1, c2, qx, qy, l);
+		kochCurve(px, py, ax, ay, l);
+		kochCurve(ax, ay, bx, by, l);
+		kochCurve(bx, by, cx, cy, l);
+		kochCurve(cx, cy, qx, qy, l);
 
 	}
 
 	public static void drawKochCurve() {
 
-		int w = 2000;
-		int h = 2000;
+		int w = 800;
+		int h = 800;
 		img = new ImageEx(w, h, 0, 0, 0);
 		img.setBgColor(0, 0, 0);
 		img.clear();
 
 		img.setColor(255, 195, 0);
-		img.kochCurve(500, 750, 500, 250, 10);
+		img.kochCurve(500, 750, 500, 250, 25);
 
 		img.save("kochCurve");
 
@@ -108,27 +103,41 @@ public class ImageEx extends Image {
 
 	public void regionFill(int x, int y, int reference_rgb) {
 
-		
-		if(reference_rgb == img.getRGB(x, y);){
+		if (reference_rgb == img.getPixel(x, y)) {
+			img.setPixel(x, y);
+
+			img.regionFill(x, y + 1, reference_rgb);
+			img.regionFill(x + 1, y, reference_rgb);
+			img.regionFill(x, y - 1, reference_rgb);
+			img.regionFill(x - 1, y, reference_rgb);
 
 		}
 
+		else {
+			return;
+		}
 
 	}
 
-	public static void drawRegionFill(String fileName) {
+	public static void drawRegionFill() {
 
 		int w = 512;
 		int h = 512;
 
-		img = new ImageEx(w, h, 0, 0, 0);
+		img = new ImageEx(w, h, 255, 255, 255);
+		img.clear();
 
 		img.setColor(255, 195, 0);
+
+		img.regionFill(100, 100, 0);
+
+		img.save("regionFill");
 
 	}
 
 	public static void main(String[] args) {
 		drawKochCurve();
+		drawRegionFill();
 	}
 
 }

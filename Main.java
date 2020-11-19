@@ -9,23 +9,24 @@ public class Main {
 
 		Scanner scanner = new Scanner(new File(inputFileName));
 
-		ImageEx image = new ImageEx(scanner.nextInt(), scanner.nextInt(), scanner.nextInt(), scanner.nextInt(), scanner.nextInt());
-	
-		while(scanner.hasNext()){
+		ImageEx image = new ImageEx(scanner.nextInt(), scanner.nextInt(), scanner.nextInt(), scanner.nextInt(),
+				scanner.nextInt());
+
+		while (scanner.hasNext()) {
 
 			String command = scanner.next();
 
-			if(command.equals("SET_COLOR")){
+			if (command.equals("SET_COLOR")) {
 
 				image.setColor(scanner.nextInt(), scanner.nextInt(), scanner.nextInt());
 			}
 
-			if(command.equals("SET_PIXEL")){
+			if (command.equals("SET_PIXEL")) {
 
 				image.setPixel(scanner.nextInt(), scanner.nextInt());
 			}
 
-			if(command.equals("DRAW_LINE")){
+			if (command.equals("DRAW_LINE")) {
 
 				image.drawLine(scanner.nextInt(), scanner.nextInt(), scanner.nextInt(), scanner.nextInt());
 			}
@@ -34,20 +35,18 @@ public class Main {
 		image.save(outputFileName);
 	}
 
-	public static void main(String [] args){
+	public static void main(String[] args) {
 
+		if (args.length != 2) {
 
-		if(args.length != 2){
-	
 			System.out.println("Uso: java " + Main.class.getName() + " entrada.txt saida.png");
 			System.exit(1);
 		}
 
-		try{
+		try {
 			generateImage(args[0], args[1]);
-		}
-		catch(IOException e){
-			
+		} catch (IOException e) {
+
 			System.out.println("Problem generating image... :(");
 			e.printStackTrace();
 		}
