@@ -1,8 +1,7 @@
-// Esqueleto da classe na qual devem ser implementadas as novas funcionalidades de desenho
+/* Turma 04 
+Roberta Vitoria Borges - nUSP 11344811 */
 
 public class ImageEx extends Image {
-
-	static ImageEx img = null;
 
 	public ImageEx(int w, int h, int r, int g, int b) {
 		super(w, h, r, g, b);
@@ -27,7 +26,7 @@ public class ImageEx extends Image {
 
 		if (distancia < l) {
 			/* fiz py e qy antes de px e py para deixar na horizontal */
-			img.drawLine(py, px, qy, qx);
+			drawLine(py, px, qy, qx);
 			return;
 		}
 
@@ -86,58 +85,33 @@ public class ImageEx extends Image {
 
 	}
 
-	public static void drawKochCurve() {
-
-		int w = 800;
-		int h = 800;
-		img = new ImageEx(w, h, 0, 0, 0);
-		img.setBgColor(0, 0, 0);
-		img.clear();
-
-		img.setColor(255, 195, 0);
-		img.kochCurve(500, 750, 500, 250, 25);
-
-		img.save("kochCurve");
-
+	public void regionFill(int x, int y) {
+		regionFill(x, y, getPixel(x, y));
 	}
 
 	public void regionFill(int x, int y, int reference_rgb) {
 
-		if (reference_rgb == img.getPixel(x, y)) {
-			img.setPixel(x, y);
-
-			img.regionFill(x, y + 1, reference_rgb);
-			img.regionFill(x + 1, y, reference_rgb);
-			img.regionFill(x, y - 1, reference_rgb);
-			img.regionFill(x - 1, y, reference_rgb);
-
-		}
-
-		else {
+		/* verifica se os valores são válidos */
+		if (x < 0 || y < 0 || getWidth() >= x || getHeight() >= y) {
 			return;
 		}
 
+		/*
+		 * Verifica se o valor de cor do pixel é o mesmo da cor original do pixel
+		 * inicial
+		 */
+		if (reference_rgb != getPixel(x, y)) {
+			return;
+		}
+
+		/* Colore o pixel */
+		getPixel(x, y);
+
+		/* Usando a recursividade para pintar a área */
+		regionFill(x + 1, y, reference_rgb);
+		regionFill(x - 1, y, reference_rgb);
+		regionFill(x, y + 1, reference_rgb);
+		regionFill(x, y - 1, reference_rgb);
+
 	}
-
-	public static void drawRegionFill() {
-
-		int w = 512;
-		int h = 512;
-
-		img = new ImageEx(w, h, 255, 255, 255);
-		img.clear();
-
-		img.setColor(255, 195, 0);
-
-		img.regionFill(100, 100, 0);
-
-		img.save("regionFill");
-
-	}
-
-	public static void main(String[] args) {
-		drawKochCurve();
-		drawRegionFill();
-	}
-
 }
