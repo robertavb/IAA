@@ -1,5 +1,4 @@
-/* Turma 04 
-Roberta Vitoria Borges - nUSP 11344811 */
+/*Roberta Vitoria Borges nUSP 11344811 Turma 04 */
 
 public class ImageEx extends Image {
 
@@ -25,8 +24,7 @@ public class ImageEx extends Image {
 		int distancia = (int) (resultadoDaReta / 3);
 
 		if (distancia < l) {
-			/* fiz py e qy antes de px e py para deixar na horizontal */
-			drawLine(py, px, qy, qx);
+			drawLine(px, py, qx, qy);
 			return;
 		}
 
@@ -92,7 +90,7 @@ public class ImageEx extends Image {
 	public void regionFill(int x, int y, int reference_rgb) {
 
 		/* verifica se os valores são válidos */
-		if (x < 0 || y < 0 || getWidth() >= x || getHeight() >= y) {
+		if (x < 0 || y < 0 || getWidth() <= x || getHeight() <= y) {
 			return;
 		}
 
@@ -105,12 +103,12 @@ public class ImageEx extends Image {
 		}
 
 		/* Colore o pixel */
-		getPixel(x, y);
+		setPixel(x, y);
 
-		/* Usando a recursividade para pintar a área */
+		/* Usando a recursividade para colorir a área */
 		regionFill(x + 1, y, reference_rgb);
-		regionFill(x - 1, y, reference_rgb);
 		regionFill(x, y + 1, reference_rgb);
+		regionFill(x - 1, y, reference_rgb);
 		regionFill(x, y - 1, reference_rgb);
 
 	}
