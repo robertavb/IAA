@@ -12,16 +12,22 @@ public class ImageEx extends Image {
 
 	public int calculaReta(int x1, int y1, int x2, int y2) {
 
-		int subtracaoX = x2 - x1; /* coordenadas X */
-		int subtracaoY = y2 - y1; /* coordenadas Y */
+		int subtracaoA = x2 - x1; /* coordenadas X */
+		int subtracaoB = y2 - y1; /* coordenadas Y */
 
-		return (int) Math.sqrt(Math.pow(subtracaoX, 2) + Math.pow(subtracaoY, 2)); /* formula para o calculo de uma reta */
+		return (int) Math.sqrt(Math.pow(subtracaoA, 2) + Math.pow(subtracaoB, 2)); /* formula para o calculo de uma reta */
 	}
 
 	public void kochCurve(int px, int py, int qx, int qy, int l) {
 
+		/* Pontos A, B, C e ponto m1 e m2 */
+
+		int ax, ay, bx, by, cx, cy, m1, m2;
+
 		int resultadoDaReta = calculaReta(px, py, qx, qy);
-		int distancia = (int) (resultadoDaReta / 3);
+
+		/* Tamanho do lado do triangulo */
+		int distancia = (int) (Math.abs(resultadoDaReta) / 3);
 
 		if (distancia < l) {
 			drawLine(px, py, qx, qy);
@@ -29,8 +35,8 @@ public class ImageEx extends Image {
 
 			/* Calculo das coordenadas do ponto A */
 
-			int ax = (int) (px + (distancia * 1 / 3));
-			int ay = (int) (py + (distancia * 1 / 3));
+			ax = (int) (px + ((qx - px) * 1 / 3));
+			ay = (int) (py + ((qy - py) * 1 / 3));
 
 			/* Calculo necessarios para calcular as coordenadas do ponto B */
 
@@ -39,8 +45,8 @@ public class ImageEx extends Image {
 			 * coordenadas
 			 */
 
-			int m1 = (int) (px + ((double) (qx - px) / 2));
-			int m2 = (int) (py + ((double) (qy - py) / 2));
+			m1 = (int) (px + ((qx - px) / 2));
+			m2 = (int) (py + ((qy - py) / 2));
 
 			/*
 			 * Calculo do vetor rv, perpendicular ao vetor v Usamos Math.PI/2 para o calculo
@@ -48,7 +54,11 @@ public class ImageEx extends Image {
 			 * [(0,0};(x,y)] forma com o eixo x em um sistema de coordenadas cartesianas
 			 */
 
-			double angulo = (Math.PI / 2) - Math.atan((double) (qy - py) / (qx - px));
+			double angulo = (Math.PI / 2) + Math.atan((double) (qy - py) / (qx - px));
+
+			/* Calculo da altura h do triangulo */
+
+			double altura = distancia * (int) Math.sqrt(3);
 
 			/*
 			 * Calculo com que fará que as linhas rotacionem x graus para formar a curva de
@@ -58,30 +68,26 @@ public class ImageEx extends Image {
 			double x = distancia * Math.cos(angulo);
 			double y = distancia * Math.sin(angulo);
 
-			/* Calculo do ponto B, utilizando o M e o vetor que liga o ponto P ao ponto Q */
-			int bx;
-			int by;
+			/* Calculo do vetor u */
 
-			if (px > qx) {
-				bx = (int) (m1 - x);
-				by = (int) (m2 + y);
-			} else {
-				bx = (int) (m1 + x);
-				by = (int) (m2 - y);
-			}
+			double ux = x * (int) Math.sqrt(3);
+			double uy = y * (int) Math.sqrt(3);
+
+			/* Calculo do ponto B, utilizando o M e o vetor que liga o ponto P ao ponto Q */
+
+			bx = -m1 + (int) x;
+			by = -m2 + (int) y;
 
 			/* Calculo das coordenadas do ponto C */
-			int cx = (int) (px + (distancia * 2.0 / 3.0));
-			int cy = (int) (py + (distancia * 2.0 / 3.0));
+			cx = (int) (px + ((qx - px) * 2.0 / 3.0));
+			cy = (int) (py + ((qy - py) * 2.0 / 3.0));
 
 			/* Usando a recursividade para desenhar a curva de Koch */
 			kochCurve(px, py, ax, ay, l);
 			kochCurve(ax, ay, bx, by, l);
 			kochCurve(bx, by, cx, cy, l);
 			kochCurve(cx, cy, qx, qy, l);
-
 		}
-
 	}
 
 	public void regionFill(int x, int y) {
